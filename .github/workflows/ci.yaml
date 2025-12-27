@@ -44,3 +44,29 @@ jobs:
       - name: Run Flake8 Linting
         run: |
           pytest
+      
+  multiple_os:
+    runs-on : ${{ matrix.os }}
+    needs : linting
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps :
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pytest
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run Testing
+        run: |
+          pytest
